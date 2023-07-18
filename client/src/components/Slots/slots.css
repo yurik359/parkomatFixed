@@ -1,0 +1,137 @@
+.slot-btn {
+  width: 57px;
+  height: 57px;
+}
+.slots__background {
+  background: #f4f5f6;
+  height: 97vh;
+}
+.slots {
+  display: flex;
+  flex-direction: column;
+  padding-top: 50px;
+  flex-wrap: wrap;
+}
+
+.slots__upper-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+.slots__upper-container input {
+  flex-basis: 50%;
+  border-radius: 16px;
+  border: 1px solid #d7d7d7;
+  padding-left: 50px;
+ padding-top: 5px;
+  
+  background-image: url("../../services/img/Group76.png"); 
+  background-position: 4% center; 
+  background-repeat: no-repeat; 
+  background-size: 20px 20px;
+
+  background-color: #F4F5F6;
+}
+.slots__upper-container input::before {
+  content: "dasd"; 
+
+  left: 10px; 
+  top: 50%;
+  
+  
+  background-image: url("../../services/img/Group76.png"); 
+  background-size: cover;
+  padding: 15px;
+}
+.slots__upper-container input::placeholder {
+  color: #ADADAD;
+  font-family: 'Inter';
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%;
+}
+ /* 25.2px */
+
+.slots__btns {
+  display: flex;
+  margin-right: 25px;
+}
+
+.slots__edit-btn {
+  margin-right: 15px;
+  background-color: #4fa4fb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  cursor: pointer;
+}
+.slots__edit-btn::after {
+  content: "";
+  display: block;
+  background: url("../../services/img/Group78.png") 40% no-repeat;
+  width: 53px;
+  height: 53px;
+}
+
+.slots__delete-btn {
+  background-color: #ffd6e0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  cursor: pointer;
+}
+.slots__delete-btn::after {
+  content: "";
+  display: block;
+  width: 22px;
+  height: 30px;
+  background: url("../../services/img/trash.svg") no-repeat;
+}
+.slots__add-item {
+  border-radius: 20px;
+  border: 1px solid #d7d7d7;
+  width: 327px;
+  height: 190px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.slots__plus {
+  font-size: 35px;
+  color: #d7d7d7;
+}
+
+.slots__add-text {
+  color: #b6b6b6;
+  font-size: 20px;
+  font-family: Inter;
+  line-height: 140%;
+  text-transform: uppercase;
+  padding-top: 6px;
+  padding-left: 5px;
+}
+
+.slots__title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.slots__down-container {
+  display: flex;
+  flex-wrap: wrap;
+  
+}
+
+@media (max-width:1015px){
+  .slots__down-container  {
+    justify-content: center;
+  }
+}
