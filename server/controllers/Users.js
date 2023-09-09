@@ -24,12 +24,21 @@ module.exports = {
       const user = await User.create({ organizationName, password:hashPassword,email });
       
       const token = jwt.sign({id:user._id},secret,{expiresIn:'24h' })
-
+      // User.dropIndex({ organizationName: 1 }, (err, result) => {
+      //   if (err) {
+      //     console.error('Ошибка при удалении уникального индекса:', err);
+      //   } else {
+      //     console.log('Уникальный индекс успешно удален:', result);
+      //   }
+      // });
       return res.json({message:'User registered successfully',token})
     } catch (error) {
       res.status(401).json({ message: "Registration error" });
+      console.log(error)
+
     }
   },
+  
   login:async(req, res) =>{
     try {
         const { email, password } = req.body;
@@ -56,13 +65,14 @@ module.exports = {
       res.status(400).json({ message: "login error" });
     }
   },
+
   sendInstruction:async (req,res) => {
     try {
         const {emailRecover} = req.body
-        
+        console.log(req.body)
         const user = await User.findOne({ email:emailRecover });
         if (user) {
-                console.log(user._id)
+                
             const token = jwt.sign({id:user._id},secret,{expiresIn:'1h' })
             let transporter = nodemailer.createTransport({
                 service: 'Gmail',
@@ -97,7 +107,7 @@ module.exports = {
 changePassword:async (req,res) => {
         try {
             const {code,password} = req.body
-            console.log(code,password)
+            
             jwt.verify(code, secret,async (err, decoded) => {
                 if (err) {
                     res.status(401).send({message:err})
@@ -118,30 +128,23 @@ changePassword:async (req,res) => {
         }
     },
     getParkomatList:async (req,res) => {
-
+      
 
       try {
           
-           const {accessToken } = req.body;
-              
-        jwt.verify(accessToken, secret,async (err, decoded) => {
-          if (err) {
-              res.status(403).send({message:err})
-            console.error('Error decode  token', err);
-          } else {
-              const {id} = decoded
-             
+
+          console.log(req.body)
+  
+        const { id } = req.decoded;
              const parkomatList= await Parkomat.findOne(
               { ['userId']: id }, 
               { parkomatItemsArray: 1 }
              )
-             console.log(parkomatList)
+           
             res.send({parkomatList})
              
-  
             
-          }
-        })
+         
       } catch (error) {
           console.log(error)
           res.send({message:error})

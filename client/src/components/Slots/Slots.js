@@ -3,9 +3,9 @@ import "./slots.css";
 import SlotItem from "../SlotItem/SlotItem";
 import AddParkomat from "../AddParkomat/AddParkomat";
 import DeleteModal from "../DeleteModal/DeleteModal";
-
+import QRCodeComponent from "../QRCodeComponent/QRCodeComponent";
 import { useEffect, useState } from "react";
-import { handleGET, useHandlePOST } from "../../services/requests";
+
 import { useDispatch, useSelector } from "react-redux";
 import { addParkomats, addOneMore, changeTypeOfModal } from "./slotsSlice";
 import {
@@ -13,10 +13,11 @@ import {
   clearForm,
   setDeleteIco,
 } from "../AddParkomat/addParkomatSlice";
-import { getListAPI } from "../../services/requests";
+import { getListItems } from "../../services/requests";
+
 
 const Slots = () => {
-  const handlePOST = useHandlePOST();
+
   const [closeModal, setCloseModal] = useState(true);
   const [closeDeleteModal, setCloseDeleteModal] = useState(true);
   
@@ -29,26 +30,34 @@ const Slots = () => {
   const { indexOfParkomat, typeOfmodal } = useSelector(
     (state) => state.slotItemSlice
   );
-  console.log(parkomatArray)
+  const [showQr,setShowQr] = useState(false)
+  
   const getParkomatList = async (accessToken) => {
-
-    const response = await handlePOST(getListAPI, {
-      accessToken,
-    });
-    console.log(response)
+    
+   try {
+    const response =await getListItems();
+ 
     if (
       response &&
-      response.parkomatList &&
-      response.parkomatList.parkomatItemsArray >= 1
+      response.data.parkomatList &&
+      response.data.parkomatList.parkomatItemsArray >= 1
     ) {
+  
       const {
         parkomatList: { parkomatItemsArray },
-      } = response;
+      } = response.data;
+     
       dispatch(addParkomats(parkomatItemsArray));
+
     } else {
       return;
     }
+   } catch (error) {
+    console.log(error)
+   }
+
   };
+  
 
   const filterSearch = (searchTerm, searchArr) => {
     if (!searchArr) return;
@@ -62,13 +71,13 @@ const Slots = () => {
     const debounce = setTimeout(async () => {
       const accessToken = localStorage.getItem("accessToken");
 
-      const res = await handlePOST(getListAPI, {
-        accessToken,
-      });
-      if (res && res.parkomatList) {
+      
+      const res = await getListItems()
+      console.log(res)
+      if (res && res.data.parkomatList) {
         const filteredArray = filterSearch(
           searchTerm,
-          res.parkomatList.parkomatItemsArray
+          res.data.parkomatList.parkomatItemsArray
         );
         dispatch(addParkomats(filteredArray));
       }
@@ -94,6 +103,7 @@ const Slots = () => {
     const editingParkomatItem = parkomatArray.filter((e) => {
       return e.uid == indexOfParkomat;
     });
+    console.log(editingParkomatItem[0])
     dispatch(editingParkomat(editingParkomatItem[0]));
 
     dispatch(setDeleteIco(true));
@@ -105,11 +115,28 @@ const Slots = () => {
   }, []);
 
   const handleOpenAddModal = () => {
+    dispatch(clearForm());
     dispatch(changeTypeOfModal("create"));
     setCloseModal(false);
-    dispatch(clearForm());
+   
     dispatch(setDeleteIco(false));
   };
+  
+  //qr-code
+  const qrCodeGenetating = () => {
+    if (indexOfParkomat == null) return;
+    setShowQr(true)
+  }
+
+  useEffect(() => {
+    
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        setShowQr(false);
+      }
+    });
+  }, []);
+  
   return (
     <div className="slots__background">
       <div className="slots wrapper">
@@ -122,6 +149,11 @@ const Slots = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <div className="slots__btns">
+            <div className="slots__qr-btn slot-btn"
+            onClick={qrCodeGenetating}
+            >
+             Get <span >Qr-code</span>
+            </div>
             <div
               className="slots__edit-btn slot-btn"
               onClick={handleOpenEdit}
@@ -153,6 +185,7 @@ const Slots = () => {
           closeDeleteModal={closeDeleteModal}
           setCloseDeleteModal={setCloseDeleteModal}
         />
+       < QRCodeComponent showQr={showQr} setShowQr={setShowQr} data={`http://localhost:19006/?parkomatId=${indexOfParkomat}`}/>
       </div>
     </div>
   );

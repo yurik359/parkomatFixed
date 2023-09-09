@@ -12,9 +12,13 @@ const SlotItem = ({
   const { indexOfParkomat, clickedParkomat } = useSelector(
     (state) => state.slotItemSlice
   );
+  const { formValues:{locationValue:{address:{}}} } = useSelector(
+    (state) => state.addParkomatSlice
+  );
   // const [clickedParkomat,setClickedParkomat] = useState(false)
   const selectParkomatItem = () => {
     if (clickedParkomat == true && indexOfParkomat == uid) {
+      console.log(indexOfParkomat)
       dispatch(addIndexParkomat(null));
       dispatch(changeClickedParkomat(false));
     } else {
@@ -37,9 +41,12 @@ const SlotItem = ({
       <img src={formPic||parking} alt="" />
       <div className="name-payment">
         <div className="slot__name">{nameOfslot}</div>
-        <div className="slot__payment">{payment}</div>
+        <div className="slot__payment">{payment.namePayment}</div>
       </div>
-      <div className="slot-item__location">{location?.address}</div>
+      <div className="slot-item__location">
+     {location.address}
+      
+      </div>
       <div className="slot-item__line"></div>
       <div className="slot-item__description">{notes}</div>
     </div>
